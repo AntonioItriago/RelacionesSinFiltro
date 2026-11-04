@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Headlines Preview</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+  font-family: Georgia, serif; 
+  background: #1a1a1a; 
+  color: white;
+  padding: 10px;
+}
+h1 { text-align: center; margin: 10px 0; font-size: 18px; color: #d4af37; }
+.controls { 
+  text-align: center; 
+  margin: 15px 0;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+button {
+  background: #d4af37;
+  color: #000;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+}
+button:hover { background: #e5c158; }
+.counter { 
+  text-align: center; 
+  margin: 10px 0;
+  font-size: 16px;
+  color: #d4af37;
+}
+.slide-container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  aspect-ratio: 960/720;
+  position: relative;
+  background: #000;
+  overflow: hidden;
+  border: 2px solid #d4af37;
+}
+.fondo {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: url('https://lh3.googleusercontent.com/d/1q-iXsH2VlWh3NASKj9l6Di_DfQTogLcZ');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.55);
+}
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 5%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.headline {
+  font-size: 4vw;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1.3;
+  text-align: center;
+  max-height: 30%;
+  overflow: hidden;
+}
+.desarrollo {
+  font-size: 2.5vw;
+  color: #e8e8e8;
+  font-style: italic;
+  line-height: 1.4;
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2% 0;
+}
+.hashtags {
+  font-size: 2vw;
+  color: #d4af37;
+  font-weight: bold;
+  text-align: center;
+  padding: 2% 0;
+}
+@media (max-width: 600px) {
+  .headline { font-size: 18px; }
+  .desarrollo { font-size: 14px; }
+  .hashtags { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<h1>🎨 Preview de Headlines</h1>
+
+<div class="controls">
+  <button onclick="prev()">◀ Anterior</button>
+  <button onclick="download()">⬇ Descargar PNG</button>
+  <button onclick="next()">Siguiente ▶</button>
+</div>
+
+<div class="counter">
+  <span id="current">1</span> / <span id="total">10</span>
+</div>
+
+<div class="slide-container" id="slide">
+  <div class="fondo"></div>
+  <div class="overlay"></div>
+  <div class="content">
+    <div class="headline" id="headline"></div>
+    <div class="desarrollo" id="desarrollo"></div>
+    <div class="hashtags" id="hashtags"></div>
+  </div>
+</div>
+
+<script>
+const headlines = [
+  {
+    h: "El día que dejaste de contarle tu día y él/ella no se dio cuenta.",
+    d: "Si no le importa tu día, no le importas tú. La comunicación muere en la indiferencia.",
+    tags: "#Indiferencia #Relaciones #AmorPropio #Comunicacion #Desamor"
+  },
+  {
+    h: "Dormir espalda con espalda no es paz, es distancia.",
+    d: "La paz real se siente en el alma, no en el silencio de dos cuerpos que ya no se tocan.",
+    tags: "#Distancia #Relaciones #Desamor #PazMental #AmorPropio"
+  },
+  {
+    h: "El silencio en la mesa dice más que mil gritos.",
+    d: "Cuando las palabras sobran y el ruido molesta, la relación ya terminó en silencio.",
+    tags: "#Silencio #Relaciones #Desamor #Comunicacion #Reflexion"
+  },
+  {
+    h: "La rutina no mata el amor, mata la curiosidad por el otro.",
+    d: "Deja de asumir y empieza a preguntar. Conoce a la persona en la que se convirtió.",
+    tags: "#Rutina #Amor #Relaciones #Curiosidad #Crecimiento"
+  },
+  {
+    h: "Te duele más lo que no dijo que lo que gritó.",
+    d: "Los gritos duelen un rato, el silencio y la omisión duelen toda la vida.",
+    tags: "#Silencio #Dolor #Relaciones #Desamor #Reflexion"
+  },
+  {
+    h: "El resentimiento es el veneno que tomas esperando que el otro muera.",
+    d: "Soltar el rencor no es perdonarlo, es dejar de beber veneno tú mismo. Sanar es tuyo.",
+    tags: "#Rencor #Sanacion #AmorPropio #PazMental #Perdon"
+  },
+  {
+    h: "Soltar no es dejar de amar, es dejar de sufrir.",
+    d: "Puedes amar desde la distancia. Soltar es elegir tu paz mental por encima de un amor que lastima.",
+    tags: "#Soltar #PazMental #AmorPropio #Desamor #Sanacion"
+  },
+  {
+    h: "El sexo sin conexión emocional es solo fricción; la conexión sin sexo es solo amistad.",
+    d: "El cuerpo y el alma deben bailar juntos. Si falta uno, la relación cojea. Busca el equilibrio.",
+    tags: "#Intimidad #Sexo #Conexion #Relaciones #Pareja"
+  },
+  {
+    h: "Tu pareja no es tu terapeuta, ni tu padre/madre, ni tu salvador.",
+    d: "Busca ayuda profesional para tus traumas. Tu pareja es tu compañero, no tu cura.",
+    tags: "#Limites #AmorPropio #RelacionesSanas #SaludMental #Pareja"
+  },
+  {
+    h: "El amor propio es el único amor que nunca te va a fallar.",
+    d: "Invierte en ti. Es la única relación que te acompañará desde el primer hasta el último aliento.",
+    tags: "#AmorPropio #Inversion #Vida #PazMental #Eternidad"
+  }
+];
+
+let current = 0;
+
+function show(i) {
+  document.getElementById('headline').textContent = headlines[i].h;
+  document.getElementById('desarrollo').textContent = headlines[i].d;
+  document.getElementById('hashtags').textContent = headlines[i].tags;
+  document.getElementById('current').textContent = i + 1;
+  document.getElementById('total').textContent = headlines.length;
+}
+
+function next() {
+  current = (current + 1) % headlines.length;
+  show(current);
+}
+
+function prev() {
+  current = (current - 1 + headlines.length) % headlines.length;
+  show(current);
+}
+
+function download() {
+  const slide = document.getElementById('slide');
+  html2canvas(slide, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#000',
+    allowTaint: true
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `Headline_${current + 1}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+show(0);
+</script>
+
+</body>
+</html>
