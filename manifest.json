@@ -1,7 +1,7 @@
 {
  "name":  "Relaciones Sin Filtro",
  "short_name":  "RSF",
- "start_url":  "/RelacionesSinFiltro/",
+ "start_url":  "/",
  "display":  "standalone",
  "background_color":  "#1a1a1a",
  "theme_color":  "#d4af37",
