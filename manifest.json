@@ -1,0 +1,21 @@
+{
+ "name":  "Relaciones Sin Filtro",
+ "short_name":  "RSF",
+ "start_url":  "/RelacionesSinFiltro/",
+ "display":  "standalone",
+ "background_color":  "#1a1a1a",
+ "theme_color":  "#d4af37",
+ "orientation":  "portrait",
+ "icons": [
+{
+ "src":  "assets/icon.png",
+ "sizes":  "192x192",
+ "type":  "image/png"
+},
+{
+ "src":  "assets/icon.png",
+ "sizes":  "512x512",
+ "type":  "image/png"
+}
+]
+}
